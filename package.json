@@ -1,0 +1,24 @@
+{
+  "name": "api_sgu",
+  "version": "1.0.0",
+  "description": "MicroServiço para gerenciamento de Usuario",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -- -r esm -r dotenv/config src/index.js",
+    "start": "pm2 start src/index.js --watch --no-daemon --node-args=\"-r esm\""
+  },
+  "author": "Matheus Gustavo Pereira",
+  "license": "ISC",
+  "dependencies": {
+    "celebrate": "^15.0.0",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "http-status": "^1.5.0",
+    "mongoose": "^6.0.7",
+    "pm2": "^5.1.1"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "nodemon": "^2.0.13"
+  }
+}
