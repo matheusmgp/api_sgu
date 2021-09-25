@@ -1,18 +1,17 @@
-const express = require('express');
 
-const User = require('../models/user');
+const httpResponse = require('../httpResponse/httpResponse');
+const AuthService = require('../services/AuthService')
 
-const router = express.Router();
+module.exports = {
 
-router.post('/register', async (req, res) => {
-    try {
-        const user = await User.create(req.body);
-        return res.send( { user })
+    
+    async authenticate(req, res){
+        const {  email , password  } = req.body
+        let payload = { email, password }
 
-    } catch (error) {
-       return res.status(400).send({ error: 'Registration failed' })
-    }
-});
+        const user = await AuthService.authenticate(payload);
+        httpResponse.responseStatus(user, res);       
+    },
 
 
-module.exports = app => app.use('/auth', router);
+}

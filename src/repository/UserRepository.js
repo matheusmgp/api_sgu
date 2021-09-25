@@ -24,4 +24,10 @@ module.exports = {
     },
 
 
+    //authentication methods
+    async findOne(email){       
+        return await User.findOne({ email }).select('+password');          
+     },
+
+
 }

@@ -2,6 +2,7 @@
 const httpResponse = require('../httpResponse/httpResponse');
 const UserService = require('../services/UserService')
 
+
 module.exports = {
 
     async findAll(req, res){

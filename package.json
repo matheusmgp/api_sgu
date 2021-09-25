@@ -10,10 +10,12 @@
   "author": "Matheus Gustavo Pereira",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "celebrate": "^15.0.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "http-status": "^1.5.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.7",
     "pm2": "^5.1.1"
   },

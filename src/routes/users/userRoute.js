@@ -2,8 +2,11 @@ const { celebrate, Segments  } = require('celebrate');
 const express = require('express')
 const UserController = require('../../controllers/UserController')
 const validation = require('../../validators/UserValidator')
+const authMiddleware = require('../../middlewares/auth')
+
 
 const routes = express.Router();
+routes.use(authMiddleware);
 
 routes.get('/users', UserController.findAll);
 
