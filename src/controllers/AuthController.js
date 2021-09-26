@@ -22,8 +22,8 @@ module.exports = {
         httpResponse.responseStatus(retorno, res);       
     },
     async resetPassword(req, res){
-        const {  email, token , password  } = req.body
-        let payload = { email, token , password }
+        const {  email, token , password ,password_repeat } = req.body
+        let payload = { email, token , password ,password_repeat}
 
         const retorno = await AuthService.resetPassword(payload);
         console.log(retorno)

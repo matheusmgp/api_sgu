@@ -26,12 +26,12 @@ module.exports = {
         return retorno;
     },
     async forgotPassword(payload){
-        const { email} = payload
+        const { email } = payload
         try {
             
             const user = await UserRepository.findOne({email}); 
             
-            if(!user) return { message: "Usuário não encontrado"}
+            if(!user) return { email, message: "Usuário não encontrado"}
 
             const token = crypto.randomBytes(20).toString('hex');
             const now = new Date();
@@ -54,25 +54,26 @@ module.exports = {
                 if(err) return { message: 'err sender ' + err }                
             });
           
-             return user
+            return { email, message: ""}
 
         } catch (error) {
-            return { message: 'err catch' + error}
+            return { email, message: 'err catch' + error}
         }
     },
     async resetPassword(payload){
-        const { email, password, token } = payload
+        const { email, password, password_repeat,token } = payload
         try {
 
-            const user = await UserRepository.findOneResetPass({email});
-           
+            if(password != password_repeat) return { ...payload, message: 'Senhas divergente'}
 
-            if(!user) return { message: "Usuário não encontrado"}
+            const user = await UserRepository.findOneResetPass({email});           
 
-            if(token != user.passwordResetToken) return { message: "Token Inválido"}
+            if(!user) return { ...payload, message: "Usuário não encontrado"}
+
+            if(token != user.passwordResetToken) return { ...payload, message: "Token Inválido"}
 
             const now = new Date()
-            if(now > user.passwordResetExpires) return { message: "Token expirado"}
+            if(now > user.passwordResetExpires) return { ...payload, message: "Token expirado"}
 
             const hash = await bcrypt.hash(password, 10);
             user.password = hash; 
@@ -84,7 +85,7 @@ module.exports = {
                 updated, 
                 message: 'Senha recuperada com sucesso.'
             }
-            return retorno
+            return { ...retorno, message: ""}
            
         } catch (error) {
             return { message: 'err catch' + error}
