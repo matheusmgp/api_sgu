@@ -8,7 +8,7 @@ module.exports = {
     },
 
     async findById(_id){       
-       return await User.findOne({ _id });          
+       return await User.findOne({ _id }).select('+password'); ;          
     },
 
     async create(payload){      
@@ -25,8 +25,8 @@ module.exports = {
 
 
     //authentication methods
-    async findOne(email){       
-        return await User.findOne({ email }).select('+password');          
+    async findOne(value){       
+        return await User.findOne(value).select('+password');          
      },
 
 

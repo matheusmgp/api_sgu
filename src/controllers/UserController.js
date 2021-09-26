@@ -13,20 +13,22 @@ module.exports = {
     async findById(req, res){
         const { _id } = req.params
         const user = await UserService.findOne( _id );
+       
         httpResponse.responseStatus(user, res);       
     },
 
     async create(req, res){
-        const { name, email , password ,cnpj } = req.body
-        let payload = { name, email, password ,cnpj}
+        const { name, email , password ,password_repeat,cnpj } = req.body
+        let payload = { name, email, password, password_repeat, cnpj}
 
-        const user = await UserService.create(payload);
-        httpResponse.responseStatus(user, res);       
+        const retorno = await UserService.create(payload);
+        httpResponse.responseStatus(retorno, res);       
     },
 
     async update(req, res){
-        const { _id, name, email , password } = req.body
-        let payload = { name, email, password }
+       
+        const { _id, name, email , password ,password_repeat,cnpj} = req.body
+        let payload = { name, email, password,password_repeat ,cnpj}
 
         const user = await UserService.update( _id , payload);
         httpResponse.responseStatus(user, res); 

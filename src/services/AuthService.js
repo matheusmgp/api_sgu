@@ -7,11 +7,11 @@ module.exports = {
     async authenticate(payload){  
        const { email, password } = payload
 
-        const user = await UserRepository.findOne(email);
-
+        const user = await UserRepository.findOne({email});
+        console.log(user)
         if(!user) return null
 
-        if(!await bcrypt.compare(password, user.password)) return null
+        if(!await bcrypt.compare(password, user.password)) return { message: "Dados Inválidos"}
 
         user.password = undefined;
 
