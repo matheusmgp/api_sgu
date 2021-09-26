@@ -6,8 +6,8 @@ module.exports = {
 
     
     async authenticate(req, res){
-        const {  email , password  } = req.body
-        let payload = { email, password }
+        const {  email , password ,cnpj } = req.body
+        let payload = { email, password,cnpj }
 
         const user = await AuthService.authenticate(payload);
         httpResponse.responseStatus(user, res);       

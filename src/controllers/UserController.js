@@ -27,8 +27,8 @@ module.exports = {
 
     async update(req, res){
        
-        const { _id, name, email , password ,password_repeat,cnpj} = req.body
-        let payload = { name, email, password,password_repeat ,cnpj}
+        const { _id, name, email , password ,password_repeat,cnpj, status} = req.body
+        let payload = { _id,name, email, password,password_repeat ,cnpj, status}
 
         const user = await UserService.update( _id , payload);
         httpResponse.responseStatus(user, res); 

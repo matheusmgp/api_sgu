@@ -15,24 +15,31 @@ module.exports = {
     async create(payload){
         const {  email,password,password_repeat,cnpj } = payload
 
-        if(password != password_repeat) return { message: 'Senhas divergente'}
+        
+        if(password != password_repeat) return { ...payload, message: 'Senhas divergente'}
 
-        if(await UserRepository.findOne({email: email})) return { message: 'E-mail já cadastrado'}
+        if(await UserRepository.findOne({email: email})) return { ...payload, message: 'E-mail já cadastrado'}
 
-        if(await UserRepository.findOne({cnpj: cnpj})) return { message: 'CNPJ já cadastrado'}
+        if(await UserRepository.findOne({cnpj: cnpj})) return {...payload,  message: 'CNPJ já cadastrado'}
 
-        const retorno = await UserRepository.create(payload);
-        return !retorno ? { message: 'Não foi possivel cadastrar'} : retorno;
+        const created = await UserRepository.create(payload);
+
+        let retorno = {
+            created,
+            message: ''
+        }
+
+        return !retorno ? { message: 'Não foi possivel cadastrar'} :  retorno;
            
     },
 
     async update(_id, payload){ 
-        const {  email,password,password_repeat,cnpj } = payload
+        const {  email,password,password_repeat,cnpj , status} = payload
         var oldUser = await UserRepository.findOne({_id: _id})
 
         if(password != '' && password_repeat != ''){
 
-            if(password != password_repeat) return { message: 'Senhas divergente'}
+            if(password != password_repeat) return { ...payload, message: 'Senhas divergentes'}
 
             const hash = await bcrypt.hash(password, 10);
             payload.password = hash; 
@@ -46,15 +53,19 @@ module.exports = {
         var newUserCnpj = await UserRepository.findOne({cnpj: cnpj})
 
         if(newUserEmail){
-            if(oldUser.email != newUserEmail.email) return { message: 'E-mail já cadastrado'} 
+            if(oldUser.email != newUserEmail.email) return { ...payload, message: 'E-mail já cadastrado'} 
         }
         if(newUserCnpj){
-            if(oldUser.email != newUserCnpj.email) return { message: 'CNPJ já cadastrado'}
+            if(oldUser.email != newUserCnpj.email) return { ...payload, message: 'CNPJ já cadastrado'}
         }
 
         
-        const retorno = await UserRepository.update(_id, payload);
-        return !retorno ?  { message: 'Não foi possivel cadastrar'} : retorno;
+        const updated = await UserRepository.update(_id, payload);
+        let retorno = {
+            updated,
+            message: ''
+        }
+        return !retorno ?  { ...payload, message: 'Não foi possivel cadastrar'} : retorno;
     },
 
     async delete(_id){

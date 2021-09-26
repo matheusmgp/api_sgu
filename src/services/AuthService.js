@@ -5,16 +5,14 @@ const authConfig = require('../config/auth')
 module.exports = {
 
     async authenticate(payload){  
-       const { email, password } = payload
+       const { email, password ,cnpj} = payload
 
-        const user = await UserRepository.findOne({email});
-        console.log(user)
-        if(!user) return null
+        const user = await UserRepository.findOne({email,cnpj});       
+        if(!user) return { message: "Usuário, senha, ou CNPJ inválidos"}
 
-        if(!await bcrypt.compare(password, user.password)) return { message: "Dados Inválidos"}
+        if(!await bcrypt.compare(password, user.password)) return { message: "Usuário, senha, ou CNPJ inválidos"}
 
         user.password = undefined;
-
         
         let retorno = { 
             user, 
