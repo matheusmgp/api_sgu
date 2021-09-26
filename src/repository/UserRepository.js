@@ -29,5 +29,9 @@ module.exports = {
         return await User.findOne(value).select('+password');          
      },
 
+     async findOneResetPass(value){       
+        return await User.findOne(value).select('+passwordResetToken  passwordResetExpires');          
+     },
+
 
 }

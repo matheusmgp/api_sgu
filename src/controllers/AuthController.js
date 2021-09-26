@@ -13,5 +13,22 @@ module.exports = {
         httpResponse.responseStatus(user, res);       
     },
 
+    async forgotPassword(req, res){
+        const {  email  } = req.body
+        let payload = { email }
+
+        const retorno = await AuthService.forgotPassword(payload);
+      
+        httpResponse.responseStatus(retorno, res);       
+    },
+    async resetPassword(req, res){
+        const {  email, token , password  } = req.body
+        let payload = { email, token , password }
+
+        const retorno = await AuthService.resetPassword(payload);
+        console.log(retorno)
+        httpResponse.responseStatus(retorno, res);     
+    }
+
 
 }

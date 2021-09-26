@@ -6,7 +6,7 @@ const authMiddleware = require('../../middlewares/auth')
 
 
 const routes = express.Router();
-routes.use(authMiddleware);
+//routes.use(authMiddleware);
 
 routes.get('/users', UserController.findAll);
 

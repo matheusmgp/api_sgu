@@ -2,6 +2,10 @@ const UserRepository = require('../repository/UserRepository')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const authConfig = require('../config/auth')
+const crypto = require('crypto')
+const mailer = require('../modules/mailer')
+
+
 module.exports = {
 
     async authenticate(payload){  
@@ -21,7 +25,71 @@ module.exports = {
 
         return retorno;
     },
+    async forgotPassword(payload){
+        const { email} = payload
+        try {
+            
+            const user = await UserRepository.findOne({email}); 
+            
+            if(!user) return { message: "Usuário não encontrado"}
 
+            const token = crypto.randomBytes(20).toString('hex');
+            const now = new Date();
+            now.setHours(now.getHours() + 1);
+
+            await UserRepository.update(user.id,{
+                '$set':{
+                    passwordResetToken : token,
+                    passwordResetExpires: now
+                }
+            })
+
+            mailer.sendMail({
+
+                to: email,
+                from: 'matheus_mgp@hotmail.com',
+                template: 'auth/forgot_password',
+                context: { token }
+            },(err) => {
+                if(err) return { message: 'err sender ' + err }                
+            });
+          
+             return user
+
+        } catch (error) {
+            return { message: 'err catch' + error}
+        }
+    },
+    async resetPassword(payload){
+        const { email, password, token } = payload
+        try {
+
+            const user = await UserRepository.findOneResetPass({email});
+           
+
+            if(!user) return { message: "Usuário não encontrado"}
+
+            if(token != user.passwordResetToken) return { message: "Token Inválido"}
+
+            const now = new Date()
+            if(now > user.passwordResetExpires) return { message: "Token expirado"}
+
+            const hash = await bcrypt.hash(password, 10);
+            user.password = hash; 
+          
+
+            const updated = await UserRepository.update(user.id, user);
+
+            let retorno = { 
+                updated, 
+                message: 'Senha recuperada com sucesso.'
+            }
+            return retorno
+           
+        } catch (error) {
+            return { message: 'err catch' + error}
+        }
+    },
     generateToken(params = {}){
         return jwt.sign(params, authConfig.secret, {
             expiresIn: 86400
